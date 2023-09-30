@@ -1,15 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import TopAppBar from './TopAppBar';
 import Reservations from './Reservations';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Home from './Home';
 import Schedules from './Schedules';
 import BottomAppBar from './BottomAppBar';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const [optionVisible, setOptionVisible] = useState(1)
-
   const visibleComponent = () => {
     switch (optionVisible) {
       case 1:
@@ -23,14 +22,19 @@ const HomeScreen = () => {
     }
   }
   return (
-    <View style={styles.container}>
-      <TopAppBar></TopAppBar>
-      <View style={styles.containerOption}>
-        {visibleComponent()}
-        <StatusBar style="auto" />
+    <>
+      <View style={styles.container}>
+        <TopAppBar
+          navigationConfiguration={() => navigation.navigate('Configuration')}
+          navigationUserOption={() => navigation.navigate('UserOptions')}
+        ></TopAppBar>
+        <View style={styles.containerOption}>
+          {visibleComponent()}
+          <StatusBar style="auto" />
+        </View>
+        <BottomAppBar style={styles.containerBottom} onButtonPress={(option) => setOptionVisible(option)} ></BottomAppBar>
       </View>
-      <BottomAppBar onButtonPress={(option) => setOptionVisible(option)} ></BottomAppBar>
-    </View>
+    </>
   )
 }
 
@@ -42,13 +46,15 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ffffff',
     alignItems: 'center',
-    justifyContent: 'center',
-
+    justifyContent: 'center'
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  containerBottom: {
+    position: 'absolute',
+    bottom: 0,
   }
 });
