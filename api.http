@@ -1,0 +1,4 @@
+### Recuperar todas las peliculas
+GET http://localhost:1234/laboratory
+
+
