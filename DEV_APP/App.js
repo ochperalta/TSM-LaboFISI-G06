@@ -1,9 +1,9 @@
-import Navigator from './src/components/Navigator.jsx';
+import Layout from './src/app/layout/Layout.jsx'
 
-export default function App() {
+export default function App () {
   return (
     <>
-      <Navigator></Navigator>
+      <Layout />
     </>
-  );
+  )
 }

@@ -1,7 +1,7 @@
 export const USER_OPTIONS = {
-  logout:'Cerrar Sesión'
+  logout: 'Cerrar Sesión'
 }
 
 export const CONFIGURATION = {
-  information:'Información del Sistema'
+  information: 'Información del Sistema'
 }
