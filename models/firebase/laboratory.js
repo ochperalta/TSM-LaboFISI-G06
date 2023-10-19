@@ -1,19 +1,17 @@
-import { initializeApp } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
-import { readJSON } from '../../utils.js'
-
-const serviceAccount = readJSON('./app-lab-fisi-1cb3f3e6f246.json')
-
-initializeApp({
-  credential: serviceAccount
-})
-
-const firestore = getFirestore()
+import { db } from './firebase.js'
 
 export class LaboratoryModel {
   static async getAll () {
-    const laboratories = await firestore.collection('laboratories').get()
-    console.log(laboratories)
-    return laboratories
+    const labList = []
+    const queryLaboratories = await db.collection('laboratories').get()
+    queryLaboratories.forEach(l => {
+      labList.push({
+        id: l.id,
+        name: l.data().name,
+        state: l.data().state,
+        location: l.data().location
+      })
+    })
+    return labList
   }
 }

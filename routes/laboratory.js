@@ -7,11 +7,6 @@ export const createLaboratoryRouter = ({ laboratoryModel }) => {
   const laboratoryController = new LaboratoryController({ laboratoryModel })
 
   laboratoryRouter.get('/', laboratoryController.getAll)
-  // laboratoryRouter.post('/', laboratoryController.create)
-
-  // laboratoryRouter.get('/:id', laboratoryController.getById)
-  // laboratoryRouter.delete('/:id', laboratoryController.delete)
-  // laboratoryRouter.patch('/:id', laboratoryController.update)
 
   return laboratoryRouter
 }
