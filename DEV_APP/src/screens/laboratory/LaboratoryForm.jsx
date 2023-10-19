@@ -1,12 +1,47 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
+import { create, update } from '../../services/software'
 
 const LaboratoryForm = ({ route, navigation }) => {
-  const { item } = route?.params ?? { item: null }
+  const { laboratory, item } = route?.params
   const defaultIcon = 'https://cdn-icons-png.flaticon.com/512/8759/8759045.png'
-  const [name, setName] = useState(item?.name ?? null)
-  const [icon, setIcon] = useState(item?.icon ?? null)
+  const [customIcon, setCustomIcon] = useState('')
+  const [name, setName] = useState(item?.name ?? '')
+  const [icon, setIcon] = useState(item?.icon ?? '')
+  const [load, setload] = useState(false)
+
+  async function handleSave () {
+    setload(true)
+    try {
+      let formData
+      if (!icon) {
+        setIcon(defaultIcon)
+        formData = { name, icon: defaultIcon, laboratoryId: laboratory.id }
+      } else {
+        setCustomIcon(icon)
+        formData = { name, icon, laboratoryId: laboratory.id }
+      }
+      let response
+      // Llama a la función saveFormData para guardar los datos
+      if (item) {
+        response = await update(item.id, formData)
+        console.log('Formulario guardado')
+      } else {
+        response = await create(formData)
+        console.log('Formulario guardado')
+      }
+      if (!response.ok) {
+        return console.log('No fue posible guardar el formulario')
+      }
+      // const labUpdate = await getByIdLaboratory(item.laboratoryId)
+      navigation.navigate('LaboratoryDetail', { item: laboratory })
+    } catch (error) {
+      console.error('Error al guardar el formulario:', error)
+    } finally {
+      setload(true)
+    }
+  }
 
   return (
     <>
@@ -15,7 +50,7 @@ const LaboratoryForm = ({ route, navigation }) => {
         <Image
           style={styles.softwareIcon}
           source={{
-            uri: icon || defaultIcon
+            uri: customIcon || defaultIcon
           }}
         />
       </View>
@@ -25,10 +60,11 @@ const LaboratoryForm = ({ route, navigation }) => {
         <Text style={styles.softwareNameLabel}>Ruta de ícono</Text>
         <TextInput style={styles.softwareName} onChangeText={(value) => setIcon(value)} value={icon} />
       </View>
+      {load && <ActivityIndicator />}
       {
         name &&
           <View style={styles.addButton}>
-            <Pressable style={styles.floatingButton} onPress={() => { navigation.navigate('LaboratoryDetail') }}>
+            <Pressable style={styles.floatingButton} onPress={handleSave}>
               <MaterialIcons name='save' size={30} color='white' />
             </Pressable>
           </View>

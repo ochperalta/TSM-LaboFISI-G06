@@ -1,5 +1,8 @@
-import { Image, StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
-import React from 'react'
+import { Image, StyleSheet, Text, View, FlatList, Pressable, ActivityIndicator, Modal } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useIsFocused } from '@react-navigation/native'
+import { deleteSoftware, getById } from '../../services/software'
+import { MaterialIcons } from '@expo/vector-icons'
 
 // const DATA = [
 //   {
@@ -45,11 +48,11 @@ import React from 'react'
 
 // ]
 
-const Item = ({ navigation, item }) => (
+const Item = ({ navigation, item, longPress }) => (
   <Pressable
     style={styles.row}
     // eslint-disable-next-line no-undef
-    onLongPress={() => alert('Borrar')}
+    onLongPress={longPress}
     onPress={navigation}
   >
     <Text style={styles.softwareName}>{item.name}</Text>
@@ -64,36 +67,104 @@ const Item = ({ navigation, item }) => (
 
 const LaboratoryDetail = ({ route, navigation }) => {
   const { item } = route.params
+  const laboratory = item
+  const [softwareList, setSoftwareList] = useState([])
+  const [load, setload] = useState(true)
+  const isFocused = useIsFocused()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [idDelete, setIdDelete] = useState(null)
+
+  function getSoftwareList () {
+    getById(item.id)
+      .then(data => {
+        setSoftwareList(data) // Actualiza el estado con los datos obtenidos
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error)
+      })
+      .finally(setload(false))
+  }
+
+  const handlerLongPress = (id) => {
+    setIdDelete(id)
+    setModalVisible(true)
+  }
+
+  const handlerDelete = async () => {
+    setModalVisible(false)
+    setload(true)
+    console.log(idDelete)
+    const response = await deleteSoftware(idDelete)
+    if (!response.ok) {
+      setload(false)
+      return console.log('No fue posible guardar el formulario')
+    }
+    getSoftwareList()
+  }
+
+  useEffect(() => {
+    if (isFocused) {
+      getSoftwareList()
+    }
+  }, [isFocused])
   return (
     <>
+      <Modal
+        animationType='none'
+        transparent
+        visible={modalVisible}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Eliminar registro</Text>
+            <View style={{ flexDirection: 'row', alignContent: 'space-around' }}>
+              <Pressable
+                style={[styles.button, styles.buttonDelete]}
+                onPress={handlerDelete}
+              >
+                <Text style={styles.textStyle}>Si</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonCancel]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>No</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.title}>
         <Text style={styles.titleText}>{item.name}</Text>
         <Text style={styles.status}>{item.state}</Text>
       </View>
 
       <View style={styles.title}>
-        <Text>Ubicación: Antiguo Pabellón - 3er Piso</Text>
+        <Text>{item.location}</Text>
       </View>
       <View style={styles.title}>
         <Text style={styles.titleText}>Software</Text>
       </View>
       <View style={styles.softwareContainer}>
+        {load && <ActivityIndicator />}
         <FlatList
-          data={item.software}
+          data={softwareList}
           numColumns={2}
           renderItem={
             ({ item }) =>
               <Item
                 item={item}
-                navigation={() => navigation.navigate('LaboratoryForm', { item })}
+                longPress={() => handlerLongPress(item.id)}
+                navigation={() => navigation.navigate('LaboratoryForm', { laboratory, item })}
+
               />
-}
+          }
           keyExtractor={item => item.id}
         />
       </View>
       <View style={styles.addButton}>
-        <Pressable style={styles.floatingButton} onPress={() => { navigation.navigate('LaboratoryForm') }}>
-          <Text style={styles.buttonText}>+</Text>
+        <Pressable style={styles.floatingButton} onPress={() => { navigation.navigate('LaboratoryForm', { laboratory }) }}>
+          <MaterialIcons name='add' size={30} color='white' />
         </Pressable>
       </View>
     </>
@@ -165,5 +236,49 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white', // Color del texto del botón
     fontWeight: '500'
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    width: 200,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2,
+    width: 50,
+    marginHorizontal: 10
+  },
+  buttonDelete: {
+    backgroundColor: 'red'
+  },
+  buttonCancel: {
+    backgroundColor: '#00a6fb'
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center'
   }
 })

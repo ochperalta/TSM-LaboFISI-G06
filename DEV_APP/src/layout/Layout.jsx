@@ -3,11 +3,11 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import LaboratoryScreen from '../../screens/laboratory/LaboratoryScreen'
-import LaboratoryDetail from '../../screens/laboratory/LaboratoryDetail'
-import LaboratoryForm from '../../screens/laboratory/LaboratoryForm'
-import ScheduleScreen from '../../screens/schedule/ScheduleScreen'
-import UserScreen from '../../screens/user/UserScreen'
+import LaboratoryScreen from '../screens/laboratory/LaboratoryScreen'
+import LaboratoryDetail from '../screens/laboratory/LaboratoryDetail'
+import LaboratoryForm from '../screens/laboratory/LaboratoryForm'
+// import ScheduleScreen from '../screens/schedule/ScheduleScreen'
+import UserScreen from '../screens/user/UserScreen'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const DetailsScreen = () => {
@@ -24,7 +24,7 @@ const Header = () => {
       <View>
         <Image
           style={styles.iconInicio}
-          source={require('../../../assets/icons/titulo.png')}
+          source={require('../../assets/icons/titulo.png')}
         />
       </View>
     </View>
@@ -81,23 +81,23 @@ const UserStackScreen = () => {
   )
 }
 
-const ScheduleStack = createNativeStackNavigator()
-const ScheduleStackScreen = () => {
-  return (
-    <ScheduleStack.Navigator>
-      <ScheduleStack.Screen
-        name='Schedule'
-        component={ScheduleScreen}
-        options={optionHeader}
-      />
-      <ScheduleStack.Screen
-        name='Details'
-        component={DetailsScreen}
-        options={optionHeader}
-      />
-    </ScheduleStack.Navigator>
-  )
-}
+// const ScheduleStack = createNativeStackNavigator()
+// const ScheduleStackScreen = () => {
+//   return (
+//     <ScheduleStack.Navigator>
+//       <ScheduleStack.Screen
+//         name='Schedule'
+//         component={ScheduleScreen}
+//         options={optionHeader}
+//       />
+//       <ScheduleStack.Screen
+//         name='Details'
+//         component={DetailsScreen}
+//         options={optionHeader}
+//       />
+//     </ScheduleStack.Navigator>
+//   )
+// }
 
 const Tab = createBottomTabNavigator()
 const Layout = () => {
@@ -127,11 +127,11 @@ const Layout = () => {
           tabBarInactiveTintColor: 'gray'
         })}
       >
-        <Tab.Screen
+        {/* <Tab.Screen
           name='ScheduleStack'
           component={ScheduleStackScreen}
           options={{ title: 'Horario' }}
-        />
+        /> */}
         <Tab.Screen
           name='laboratoryStack'
           component={LaboratoryStackScreen}

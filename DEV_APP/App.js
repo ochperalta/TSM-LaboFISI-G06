@@ -1,4 +1,4 @@
-import Layout from './src/app/layout/Layout.jsx'
+import Layout from './src/layout/Layout.jsx'
 
 export default function App () {
   return (

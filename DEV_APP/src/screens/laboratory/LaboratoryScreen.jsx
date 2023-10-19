@@ -1,59 +1,29 @@
 import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { getAll } from '../../services/laboratory'
 
-// const DATA = [
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//     title: 'LAB - 1',
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f6a',
-//     title: 'LAB - 2',
-//   },
-//   {
-//     id: '58694a0f-3da1-471f-bd96-145571e29d7d',
-//     title: 'LAB - 3',
-//   },
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bh',
-//     title: 'LAB - 1',
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-//     title: 'LAB - 2',
-//   },
-//   {
-//     id: '58694a0f-3da1-471f-bd96-145571e29d71',
-//     title: 'LAB - 3',
-//   },
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28b2',
-//     title: 'LAB - 1',
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f6p',
-//     title: 'LAB - 2',
-//   }
-// ];
-
-const Item = ({ navigation, item }) => (
+const Item = ({ navigation, laboratory }) => (
   <Pressable onPress={navigation} style={styles.row}>
-    <Text style={styles.titleText}>{item.name}</Text>
-    <Text style={item.state === 'DISPONIBLE' ? styles.available : styles.occupied}>{item.state}</Text>
+    <Text style={styles.titleText}>{laboratory.name}</Text>
+    <Text style={laboratory.state === 'DISPONIBLE' ? styles.available : styles.occupied}>{laboratory.state}</Text>
   </Pressable>
 )
 
 const LaboratoryScreen = ({ navigation }) => {
   const [laboratories, setLaboratories] = useState([])
 
-  useEffect(() => {
-    // Hacer una solicitud GET a la API
-    fetch('http://192.168.1.11:1234/laboratory')
-      .then(res => res.json())
-      .then(laboratories => {
-        setLaboratories(laboratories)
-        console.log(laboratories)
+  function getAllLaboratories () {
+    getAll()
+      .then(data => {
+        setLaboratories(data) // Actualiza el estado con los datos obtenidos
       })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error)
+      })
+  }
+
+  useEffect(() => {
+    getAllLaboratories()
   }, [])
 
   return (
@@ -67,7 +37,7 @@ const LaboratoryScreen = ({ navigation }) => {
         renderItem={
           ({ item }) =>
             <Item
-              item={item}
+              laboratory={item}
               navigation={() => navigation.navigate('LaboratoryDetail', { item })}
             />
         }
