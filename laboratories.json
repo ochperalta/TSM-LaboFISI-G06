@@ -1,0 +1,119 @@
+[
+  {
+    "id": "dcdd0fad-a94c-4810-8acc-5f108d3b18c3",
+    "name": "LAB 1",
+    "state": "DISPONIBLE",
+    "software":[
+      {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+        "name": "Visual Studio Code",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/512px-Visual_Studio_Code_1.35_icon.svg.png"
+      },
+      {
+        "id": "3ac68afc-c605-48d3-a4f8-fbd91aa97f6a",
+        "name": "Visual Studio 2022",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Visual_Studio_Icon_2019.svg/2060px-Visual_Studio_Icon_2019.svg.png"
+      },
+      {
+        "id": "58694a0f-3da1-471f-bd96-145571e29d7d",
+        "name": "Android Studio",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Android_Studio_icon_%282023%29.svg/2048px-Android_Studio_icon_%282023%29.svg.png"
+      },
+      {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bh",
+        "name": "MatLab",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Matlab_Logo.png/667px-Matlab_Logo.png"
+      },
+      {
+        "id": "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
+        "name": "P-Seint",
+        "icon": "https://usuarios.cnba.uba.ar/gabinetes/software/PSeInt%20NUEVO/imgs/logo.png"
+      },
+      {
+        "id": "58694a0f-3da1-471f-bd96-145571e29d71",
+        "name": "NetBeans",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Apache_NetBeans_Logo.svg/888px-Apache_NetBeans_Logo.svg.png"
+      },
+      {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28b2",
+        "name": "Microsoft SQL Management Studio 2018",
+        "icon": "https://i.pinimg.com/736x/32/a0/3a/32a03aee0c76419ec5bde950a62883bc.jpg"
+      },
+      {
+        "id": "3ac68afc-c605-48d3-a4f8-fbd91aa97f6p",
+        "name": "Proteus",
+        "icon": "https://upload.wikimedia.org/wikipedia/en/5/5a/Proteus_Design_Suite_Atom_Logo.png"
+      }
+    ]
+  },
+  {
+    "id": "dcdd0fad-a94c-4810-8acc-5f108d3b18d4",
+    "name": "LAB 2",
+    "state": "OCUPADO"
+  },
+  {
+    "id": "5ad1a235-0d9c-410a-b32b-220d91689a08",
+    "name": "LAB 3",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "241bf55d-b649-4109-af7c-0e6890ded3fc",
+    "name": "LAB 4",
+    "state": "OCUPADO"
+  },
+  {
+    "id": "9e6106f0-848b-4810-a11a-3d832a5610f9",
+    "name": "LAB 5",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "7d2832f8-c70a-410e-8963-4c93bf36cc9c",
+    "name": "LAB 6",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "ccf36f2e-8566-47f7-912d-9f4647250bc7",
+    "name": "LAB 7",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "8fb17ae1-bdfe-45e5-a871-4772d7e526b8",
+    "name": "LAB NP - 101",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "6a360a18-c645-4b47-9a7b-2a71babbf3e0",
+    "name": "LAB NP - 102",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "7e3fd5ab-60ff-4ae2-92b6-9597f0308d1",
+    "name": "LAB NP - 201",
+    "state": "OCUPADO"
+  },
+  {
+    "id": "c906673b-3948-4402-ac7f-73ac3a9e3105",
+    "name": "LAB NP - 202",
+    "state": "OCUPADO"
+  },
+  {
+    "id": "b6e03689-cccd-478e-8565-d92f40813b13",
+    "name": "LAB NP - 203",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "aa391090-b938-42eb-b520-86ea0aa3917b",
+    "name": "LAB NP - 204",
+    "state": "DISPONIBLE"
+  },
+  {
+    "id": "2e6900e2-0b48-4fb6-ad48-09c7086e54fe",
+    "name": "LAB NP - 301",
+    "state": "OCUPADO"
+  },
+  {
+    "id": "04986507-b3ed-442c-8ae7-4c5df804f896",
+    "name": "LAB NP - 302",
+    "state": "DISPONIBLE"
+  }
+]
