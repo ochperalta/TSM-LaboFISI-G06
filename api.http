@@ -2,14 +2,26 @@
 GET http://localhost:1234/laboratory
 
 ### Agregar software a un laboratorio
-POST http://localhost:1234/laboratory
+POST http://localhost:1234/software
 Content-Type: application/json
 
 {
-  "name": "The Godfather",
-  "laboratoryId": "rFEKZ8n7hbeKBdj5Zlgj",
+  "name": "prueba para eliminar",
+  "laboratory": "6b91ef96-46e4-4477-97fe-29485be63aa9",
+  "icon": "https://img.fruugo.com/product/4/49/14441494_max.jpg"
+}
+
+### Actualizar software a un laboratorio
+PATCH http://localhost:1234/software/09675fb5-4337-42b9-9a7f-a329ac5497f7
+Content-Type: application/json
+
+{
+  "name": "Prueba Uno Editado",
   "icon": "https://img.fruugo.com/product/4/49/14441494_max.jpg"
 }
 
 ### Recuperar una laboratorio por id
-GET http://localhost:1234/software/rFEKZ8n7hbeKBdj5Zlgj
+GET http://localhost:1234/software/6b91ef96-46e4-4477-97fe-29485be63aa9
+
+### Eliminar software a un laboratorio
+DELETE http://localhost:1234/software/82743398-b7d3-4b33-bece-c429c3b896f1
