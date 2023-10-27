@@ -5,7 +5,7 @@ const softwareSchema = z.object({
     invalid_type_error: 'Laboratory name must be a string',
     required_error: 'Laboratory name is required.'
   }),
-  laboratoryId: z.string(),
+  laboratory: z.string(),
   icon: z.string().url({
     message: 'Poster must be a valid URL'
   })
