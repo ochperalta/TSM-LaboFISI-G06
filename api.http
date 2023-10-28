@@ -12,11 +12,11 @@ Content-Type: application/json
 }
 
 ### Actualizar software a un laboratorio
-PATCH http://localhost:1234/software/09675fb5-4337-42b9-9a7f-a329ac5497f7
+PATCH http://localhost:1234/software/ae1fc7d3-081f-46e9-a3c7-4a9213eaf89f
 Content-Type: application/json
 
 {
-  "name": "Prueba Uno Editado",
+  "name": "Prueba ELIMINAR Editado",
   "icon": "https://img.fruugo.com/product/4/49/14441494_max.jpg"
 }
 
