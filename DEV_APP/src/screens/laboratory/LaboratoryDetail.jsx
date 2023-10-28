@@ -136,7 +136,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
       </Modal>
       <View style={styles.title}>
         <Text style={styles.titleText}>{item.name}</Text>
-        <Text style={styles.status}>{item.state}</Text>
+        <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'OCUPADO'}</Text>
       </View>
 
       <View style={styles.title}>
@@ -184,9 +184,17 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: '500'
   },
-  status: {
+  available: {
     marginVertical: 10,
     backgroundColor: 'green',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    color: 'white',
+    fontWeight: '600'
+  },
+  occupied: {
+    marginVertical: 10,
+    backgroundColor: 'red',
     paddingHorizontal: 15,
     paddingVertical: 10,
     color: 'white',

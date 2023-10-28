@@ -17,10 +17,10 @@ const LaboratoryForm = ({ route, navigation }) => {
       let formData
       if (!icon) {
         setIcon(defaultIcon)
-        formData = { name, icon: defaultIcon, laboratoryId: laboratory.id }
+        formData = { name, icon: defaultIcon, laboratory_id: laboratory.id }
       } else {
         setCustomIcon(icon)
-        formData = { name, icon, laboratoryId: laboratory.id }
+        formData = { name, icon, laboratory_id: laboratory.id }
       }
       let response
       // Llama a la función saveFormData para guardar los datos
@@ -34,7 +34,6 @@ const LaboratoryForm = ({ route, navigation }) => {
       if (!response.ok) {
         return console.log('No fue posible guardar el formulario')
       }
-      // const labUpdate = await getByIdLaboratory(item.laboratoryId)
       navigation.navigate('LaboratoryDetail', { item: laboratory })
     } catch (error) {
       console.error('Error al guardar el formulario:', error)

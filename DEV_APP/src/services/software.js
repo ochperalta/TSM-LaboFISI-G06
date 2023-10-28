@@ -1,6 +1,8 @@
+import { environment } from '../environment/environment'
+
 // Función que realiza la solicitud GET y devuelve los datos
 export const create = async (formData) => {
-  const response = await fetch('http://192.168.1.9:1234/software', {
+  const response = await fetch(environment.uriServerApiSoftware, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -18,7 +20,7 @@ export const create = async (formData) => {
 }
 
 export const getById = async (id) => {
-  const response = await fetch('http://192.168.1.9:1234/software' + '/' + id)
+  const response = await fetch(environment.uriServerApiSoftware + '/' + id)
   if (!response.ok) {
     throw new Error('La solicitud no fue exitosa.')
   }
@@ -28,7 +30,7 @@ export const getById = async (id) => {
 }
 
 export const update = async (id, formData) => {
-  const response = await fetch(('http://192.168.1.9:1234/software' + '/' + id), {
+  const response = await fetch((environment.uriServerApiSoftware + '/' + id), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'
@@ -46,7 +48,7 @@ export const update = async (id, formData) => {
 }
 
 export const deleteSoftware = async (id) => {
-  const response = await fetch(('http://192.168.1.9:1234/software' + '/' + id), {
+  const response = await fetch((environment.uriServerApiSoftware + '/' + id), {
     method: 'DELETE'
   })
 

@@ -1,9 +1,9 @@
-import Layout from './src/layout/Layout.jsx'
+import Authentication from './src/screens/authentication/Authentication.jsx'
 
 export default function App () {
   return (
     <>
-      <Layout />
+      <Authentication />
     </>
   )
 }

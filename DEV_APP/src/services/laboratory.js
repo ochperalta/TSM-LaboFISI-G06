@@ -1,6 +1,8 @@
+import { environment } from '../environment/environment'
+
 // Función que realiza la solicitud GET y devuelve los datos
 export const getAll = async () => {
-  const response = await fetch('http://192.168.1.9:1234/laboratory')
+  const response = await fetch(environment.uriServerApiLaboratory)
   if (!response.ok) {
     throw new Error('La solicitud no fue exitosa.')
   }

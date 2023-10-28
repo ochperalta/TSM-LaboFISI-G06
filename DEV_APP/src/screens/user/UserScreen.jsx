@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 const UserScreen = () => {
+  const navigation = useNavigation()
   return (
     <View>
       <View style={styles.title}>
@@ -10,7 +12,10 @@ const UserScreen = () => {
       <View style={styles.containerUser}>
         <Text style={styles.label}>Martin Perez Duarte</Text>
         <Text style={styles.label}>mperezd@unmsm.edu.pe</Text>
-        <Pressable style={{ width: '100%' }}>
+        <Pressable
+          onPress={() => navigation.navigate('LoginScreen')}
+          style={{ width: '100%' }}
+        >
           <Text style={styles.label}>Cerrar Sesión</Text>
         </Pressable>
       </View>
