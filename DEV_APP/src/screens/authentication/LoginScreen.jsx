@@ -1,29 +1,10 @@
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import { login } from '../../services/login'
-import { Ionicons } from '@expo/vector-icons'
-
-const ViewPassword = ({ setView }) => {
-  const [viewPassword, setViewPassword] = useState(false)
-
-  const changeBtn = (flag) => {
-    setViewPassword(flag)
-    setView(flag)
-  }
-  return (
-    <Pressable
-      style={styles.btnViewPassword}
-      title={viewPassword ? 'Ocultar' : 'Mostrar'}
-      onPress={() => changeBtn(!viewPassword)}
-    >
-      <Ionicons
-        name={viewPassword ? 'eye-off-outline' : 'eye-outline'}
-        size={24}
-        color='gray'
-      />
-    </Pressable>
-  )
-}
+import { getById, login } from '../../services/login'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ASYNC_STORAGE_USER } from '../../shared/constants'
+import bcrypt from 'bcryptjs'
+import ViewPassword from './ViewPassword'
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('')
@@ -32,25 +13,52 @@ const LoginScreen = ({ navigation }) => {
   const [viewMessage, setViewMessage] = useState(false)
   const [messageLogin, setMessageLogin] = useState('')
 
-  const Login = async () => {
+  const loginUser = async () => {
     setViewMessage(false)
     const pass = password
-    const requestLogin = {
-      emailHeader: email,
-      passwordHeader: pass
-    }
+    let saltCode = ''
+    await getById(email)
+      .then(codeLogin => {
+        saltCode = codeLogin.code
+        bcrypt.hash(pass, saltCode, (err, hash) => {
+          if (err) {
+            console.error('Error al inicar sesión:', err)
+          } else {
+            // El valor de 'hash' es el hash seguro de la contraseña
+            console.log('Contraseña hasheada:', hash)
 
-    const responseLogin = await login(requestLogin)
-    if (responseLogin.ok) {
-      resetPassword()
-      console.log(password)
-      navigation.navigate('Layout')
-    } else if (responseLogin.status === 401 || responseLogin.status === 400) {
-      setViewMessage(true)
-      setMessageLogin('Credenciales incorrectas')
-    } else {
-      setViewMessage(true)
-      setMessageLogin('Error al iniciar sesión')
+            const requestLogin = {
+              login: hash,
+              email
+            }
+            login(requestLogin)
+              .then(responseLogin => {
+                resetPassword()
+                console.log(password)
+                console.log(responseLogin[0])
+                saveAsyncStorage(responseLogin[0])
+                navigation.navigate('Layout')// Actualiza el estado con los datos obtenidos
+              })
+              .catch(error => {
+                setViewMessage(true)
+                console.log(error.message)
+                setMessageLogin(error.message)
+              })
+          }
+        })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  const saveAsyncStorage = async (data) => {
+    try {
+      await AsyncStorage.setItem(ASYNC_STORAGE_USER.username, data.username)
+      await AsyncStorage.setItem(ASYNC_STORAGE_USER.email, data.email)
+      console.log('Dato guardado exitosamente')
+    } catch (error) {
+      console.error('Error al guardar el dato: ', error)
     }
   }
 
@@ -59,6 +67,11 @@ const LoginScreen = ({ navigation }) => {
   }
   const resetPassword = () => {
     setPassword('')
+  }
+
+  const navigateRegister = () => {
+    setPassword('')
+    navigation.navigate('RegisterScreen')
   }
 
   return (
@@ -82,7 +95,7 @@ const LoginScreen = ({ navigation }) => {
       </View>
       <Pressable
         style={!password || !email ? styles.btnLoginDisabled : styles.btnLogin}
-        onPress={Login}
+        onPress={loginUser}
         disabled={!password || !email}
       >
         <Text style={styles.loginText}>Ingresar</Text>
@@ -92,7 +105,7 @@ const LoginScreen = ({ navigation }) => {
 
       <Pressable
         style={styles.btnRegister}
-        onPress={() => navigation.navigate('RegisterScreen')}
+        onPress={navigateRegister}
       >
         <Text style={styles.registerText}>Registrarse</Text>
       </Pressable>

@@ -41,7 +41,7 @@ const LaboratoryScreen = ({ navigation }) => {
               navigation={() => navigation.navigate('LaboratoryDetail', { item })}
             />
         }
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.laboratory_id}
       />
     </View>
   )

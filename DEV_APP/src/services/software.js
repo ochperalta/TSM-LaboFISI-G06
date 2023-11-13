@@ -29,8 +29,8 @@ export const getById = async (id) => {
   return data
 }
 
-export const update = async (id, formData) => {
-  const response = await fetch((environment.uriServerApiSoftware + '/' + id), {
+export const update = async (ida, formData) => {
+  const response = await fetch((environment.uriServerApiSoftware + '/' + ida), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'

@@ -1,8 +1,26 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { ASYNC_STORAGE_USER, USER_OPTIONS } from '../../shared/constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const UserScreen = () => {
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+
+  useEffect(() => {
+    getAsyncStorage()
+  }, [])
+
+  const getAsyncStorage = async () => {
+    try {
+      setUsername(await AsyncStorage.getItem(ASYNC_STORAGE_USER.username) ?? '')
+      setEmail(await AsyncStorage.getItem(ASYNC_STORAGE_USER.email) ?? '')
+    } catch (error) {
+      console.error('Error al recuperar el dato: ', error)
+    }
+  }
+
   const navigation = useNavigation()
   return (
     <View>
@@ -10,13 +28,13 @@ const UserScreen = () => {
         <Text style={styles.titleText}>Información de Usuario</Text>
       </View>
       <View style={styles.containerUser}>
-        <Text style={styles.label}>Martin Perez Duarte</Text>
-        <Text style={styles.label}>mperezd@unmsm.edu.pe</Text>
+        <Text style={styles.label}>Usuario: {username}</Text>
+        <Text style={styles.label}>Email: {email}</Text>
         <Pressable
           onPress={() => navigation.navigate('LoginScreen')}
           style={{ width: '100%' }}
         >
-          <Text style={styles.label}>Cerrar Sesión</Text>
+          <Text style={[styles.label, styles.logout]}>{USER_OPTIONS.logout}</Text>
         </Pressable>
       </View>
     </View>
@@ -48,5 +66,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomColor: 'rgba(0,0,0,0.25)',
     borderBottomWidth: 1
+  },
+  logout: {
+    fontWeight: '500'
   }
 })

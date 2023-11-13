@@ -75,7 +75,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
   const [idDelete, setIdDelete] = useState(null)
 
   function getSoftwareList () {
-    getById(item.id)
+    getById(item.laboratory_id)
       .then(data => {
         setSoftwareList(data) // Actualiza el estado con los datos obtenidos
       })
@@ -154,12 +154,12 @@ const LaboratoryDetail = ({ route, navigation }) => {
             ({ item }) =>
               <Item
                 item={item}
-                longPress={() => handlerLongPress(item.id)}
+                longPress={() => handlerLongPress(item.software_id)}
                 navigation={() => navigation.navigate('LaboratoryForm', { laboratory, item })}
 
               />
           }
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.software_id}
         />
       </View>
       <View style={styles.addButton}>

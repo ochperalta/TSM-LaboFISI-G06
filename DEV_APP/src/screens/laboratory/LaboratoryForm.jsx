@@ -17,15 +17,15 @@ const LaboratoryForm = ({ route, navigation }) => {
       let formData
       if (!icon) {
         setIcon(defaultIcon)
-        formData = { name, icon: defaultIcon, laboratory_id: laboratory.id }
+        formData = { name, icon: defaultIcon, laboratory_id: laboratory.laboratory_id }
       } else {
         setCustomIcon(icon)
-        formData = { name, icon, laboratory_id: laboratory.id }
+        formData = { name, icon, laboratory_id: laboratory.laboratory_id }
       }
       let response
       // Llama a la función saveFormData para guardar los datos
       if (item) {
-        response = await update(item.id, formData)
+        response = await update(item.software_id, formData)
         console.log('Formulario guardado')
       } else {
         response = await create(formData)
