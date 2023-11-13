@@ -5,9 +5,10 @@ import 'dotenv/config'
 import { createSoftwareRouter } from './routes/software.js'
 import cors from 'cors'
 import { createLoginRouter } from './routes/login.js'
+import { createRegisterRouter } from './routes/register.js'
 
 // después
-export const createApp = ({ laboratoryModel, softwareModel, loginModel }) => {
+export const createApp = ({ laboratoryModel, softwareModel, loginModel, registerModel }) => {
   const app = express()
   app.use(json())
   // app.use(corsMiddleware())
@@ -19,6 +20,8 @@ export const createApp = ({ laboratoryModel, softwareModel, loginModel }) => {
   app.use('/software', createSoftwareRouter({ softwareModel }))
 
   app.use('/login', createLoginRouter({ loginModel }))
+
+  app.use('/register', createRegisterRouter({ registerModel }))
 
   const PORT = process.env.PORT ?? 1234
 
