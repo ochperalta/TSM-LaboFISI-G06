@@ -12,11 +12,11 @@ Content-Type: application/json
 }
 
 ### Actualizar software a un laboratorio
-PATCH http://localhost:1234/software/ae1fc7d3-081f-46e9-a3c7-4a9213eaf89f
+PATCH http://localhost:1234/software/f77bc306-92d0-4964-8083-7e4c6d455ba5
 Content-Type: application/json
 
 {
-  "name": "Prueba ELIMINAR Editado",
+  "name": "Prueba 123 Editado adsa",
   "icon": "https://img.fruugo.com/product/4/49/14441494_max.jpg"
 }
 
@@ -24,4 +24,4 @@ Content-Type: application/json
 GET http://localhost:1234/software/6b91ef96-46e4-4477-97fe-29485be63aa9
 
 ### Eliminar software a un laboratorio
-DELETE http://localhost:1234/software/82743398-b7d3-4b33-bece-c429c3b896f1
+DELETE http://localhost:1234/software/ae1fc7d3-081f-46e9-a3c7-4a9213eaf89f
