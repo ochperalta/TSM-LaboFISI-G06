@@ -6,13 +6,22 @@ import { createSoftwareRouter } from './routes/software.js'
 import cors from 'cors'
 import { createLoginRouter } from './routes/login.js'
 import { createRegisterRouter } from './routes/register.js'
+import { createInventoryRouter } from './routes/inventory.js'
 
 // después
-export const createApp = ({ laboratoryModel, softwareModel, loginModel, registerModel }) => {
+export const createApp = ({
+  laboratoryModel,
+  softwareModel,
+  loginModel,
+  registerModel,
+  inventoryModel
+}) => {
   const app = express()
+
   app.use(json())
   // app.use(corsMiddleware())
   app.use(cors())
+
   app.disable('x-powered-by')
 
   app.use('/laboratory', createLaboratoryRouter({ laboratoryModel }))
@@ -22,6 +31,8 @@ export const createApp = ({ laboratoryModel, softwareModel, loginModel, register
   app.use('/login', createLoginRouter({ loginModel }))
 
   app.use('/register', createRegisterRouter({ registerModel }))
+
+  app.use('/inventory', createInventoryRouter({ inventoryModel }))
 
   const PORT = process.env.PORT ?? 1234
 
