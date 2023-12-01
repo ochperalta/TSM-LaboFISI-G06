@@ -6,7 +6,46 @@ export class ScheduleModel {
     await dbPostgre.query('SELECT schedule_id, laboratory.name as laboratory, init_time as init, end_time as end, master_table.name as day, course FROM schedule LEFT JOIN laboratory ON schedule.laboratory_id = laboratory.laboratory_id LEFT JOIN master_table ON schedule.day = master_table.value WHERE schedule.status = $1 AND laboratory.state = $1 AND master_table.master_table_idparent = $2 ORDER BY init_time', ['A', '51f87c42-813e-4411-9085-faff71b32f4c'])
       .then((result) => {
         console.log('Resultados de la consulta:', result)
-        scheduleListResponse = result
+        const oneDay = result.filter(x => x.day === 'lunes')
+        const twoDay = result.filter(x => x.day === 'martes')
+        const threeDay = result.filter(x => x.day === 'miércoles')
+        const fourDay = result.filter(x => x.day === 'jueves')
+        const fiveDay = result.filter(x => x.day === 'viernes')
+        const sixDay = result.filter(x => x.day === 'sábado')
+        const sevenDay = result.filter(x => x.day === 'domingo')
+
+        const weeklyScheduleData = [
+          {
+            day: 'Lunes',
+            labs: oneDay
+          },
+          {
+            day: 'Martes',
+            labs: twoDay
+          },
+          {
+            day: 'Miércoles',
+            labs: threeDay
+          },
+          {
+            day: 'Jueves',
+            labs: fourDay
+          },
+          {
+            day: 'Viernes',
+            labs: fiveDay
+          },
+          {
+            day: 'Sábado',
+            labs: sixDay
+          },
+          {
+            day: 'Domingo',
+            labs: sevenDay
+          }
+        ]
+
+        scheduleListResponse = weeklyScheduleData
       })
       .catch((error) => {
         console.error('Error al ejecutar la consulta:', error)
