@@ -53,3 +53,35 @@ Content-Type: application/json
   "code": "IMPRASD546163",
   "description": "Impresora ahora blanca"
 }
+
+
+### SCHEDULE
+
+### Recuperar una horarios
+GET http://localhost:1234/schedule
+
+### Agregar horario a un laboratorio
+POST http://localhost:1234/schedule
+Content-Type: application/json
+
+{
+  "day": "5",
+  "initTime": "12:00",
+  "laboratory_id": "380bd58b-939c-4226-9d4b-3e8e29924527",
+  "endTime": "14:00",
+  "course": "Curso 3"
+}
+
+### Actualizar componente a un laboratorio
+PATCH http://localhost:1234/schedule/0de084f1-5b0c-4c4d-b82f-73bbf6c8b0a3
+Content-Type: application/json
+
+{
+  "endTime":"10:30",
+  "initTime": "8:30",
+  "course":"Curso 8",
+  "day": "2"
+}
+
+### Eliminar componente a un laboratorio
+DELETE http://localhost:1234/schedule/f05480fb-7ea1-4bc8-9c3f-fcb92b187c15
