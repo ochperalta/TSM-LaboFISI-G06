@@ -2,51 +2,8 @@ import { Image, StyleSheet, Text, View, FlatList, Pressable, ActivityIndicator, 
 import React, { useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import { deleteSoftware, getById } from '../../services/software'
+import { deleteInventory, getByIdInventory } from '../../services/inventory'
 import { MaterialIcons } from '@expo/vector-icons'
-
-// const DATA = [
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//     name: 'Visual Studio Code',
-//     icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/512px-Visual_Studio_Code_1.35_icon.svg.png'
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f6a',
-//     name: 'Visual Studio 2022',
-//     icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Visual_Studio_Icon_2019.svg/2060px-Visual_Studio_Icon_2019.svg.png'
-//   },
-//   {
-//     id: '58694a0f-3da1-471f-bd96-145571e29d7d',
-//     name: 'Android Studio',
-//     icon: 'https://developer.android.com/static/studio/images/new-studio-logo-1.png'
-//   },
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bh',
-//     name: 'MatLab',
-//     icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Matlab_Logo.png/667px-Matlab_Logo.png'
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-//     name: 'P-Seint',
-//     icon: 'https://usuarios.cnba.uba.ar/gabinetes/software/PSeInt%20NUEVO/imgs/logo.png'
-//   },
-//   {
-//     id: '58694a0f-3da1-471f-bd96-145571e29d71',
-//     name: 'NetBeans',
-//     icon: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Apache_NetBeans_Logo.svg/888px-Apache_NetBeans_Logo.svg.png'
-//   },
-//   {
-//     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28b2',
-//     name: 'Microsoft SQL Management Studio 2018',
-//     icon: 'https://i.pinimg.com/736x/32/a0/3a/32a03aee0c76419ec5bde950a62883bc.jpg'
-//   },
-//   {
-//     id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f6p',
-//     name: 'Proteus',
-//     icon: 'https://upload.wikimedia.org/wikipedia/en/5/5a/Proteus_Design_Suite_Atom_Logo.png'
-//   }
-
-// ]
 
 const Item = ({ navigation, item, longPress }) => (
   <Pressable
@@ -65,19 +22,45 @@ const Item = ({ navigation, item, longPress }) => (
   </Pressable>
 )
 
+const ItemComponent = ({ navigation, item, longPress }) => (
+  <Pressable
+    style={styles.row}
+    // eslint-disable-next-line no-undef
+    onLongPress={longPress}
+    onPress={navigation}
+  >
+    <Text style={styles.softwareName}>{item.name}</Text>
+    <Text style={{ width: '100%', textAlign: 'left', paddingHorizontal: 5 }}>Código: {item.code}</Text>
+    <Text style={{ width: '100%', textAlign: 'left', paddingHorizontal: 5 }}>Descripción: {item.description}</Text>
+  </Pressable>
+)
+
 const LaboratoryDetail = ({ route, navigation }) => {
   const { item } = route.params
   const laboratory = item
   const [softwareList, setSoftwareList] = useState([])
+  const [inventoryList, setInventoryList] = useState([])
   const [load, setload] = useState(true)
   const isFocused = useIsFocused()
   const [modalVisible, setModalVisible] = useState(false)
   const [idDelete, setIdDelete] = useState(null)
+  const [isSoftware, setIsSoftware] = useState(true)
 
   function getSoftwareList () {
     getById(item.laboratory_id)
       .then(data => {
         setSoftwareList(data) // Actualiza el estado con los datos obtenidos
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error)
+      })
+      .finally(setload(false))
+  }
+
+  const getInventoryList = () => {
+    getByIdInventory(item.laboratory_id)
+      .then(data => {
+        setInventoryList(data) // Actualiza el estado con los datos obtenidos
       })
       .catch(error => {
         console.error('Error al obtener datos de la API:', error)
@@ -94,19 +77,38 @@ const LaboratoryDetail = ({ route, navigation }) => {
     setModalVisible(false)
     setload(true)
     console.log(idDelete)
-    const response = await deleteSoftware(idDelete)
-    if (!response.ok) {
-      setload(false)
-      return console.log('No fue posible guardar el formulario')
+    if (isSoftware) {
+      const response = await deleteSoftware(idDelete)
+      if (!response.ok) {
+        setload(false)
+        return console.log('No fue realizar la operación')
+      }
+      getSoftwareList()
+    } else {
+      const response = await deleteInventory(idDelete)
+      if (!response.ok) {
+        setload(false)
+        return console.log('No fue realizar la operación')
+      }
+      getInventoryList()
     }
-    getSoftwareList()
   }
 
   useEffect(() => {
     if (isFocused) {
       getSoftwareList()
+      getInventoryList()
     }
   }, [isFocused])
+
+  const handlerAdd = () => {
+    if (isSoftware) {
+      navigation.navigate('LaboratoryForm', { laboratory })
+    } else {
+      navigation.navigate('InventoryForm', { laboratory })
+    }
+  }
+
   return (
     <>
       <Modal
@@ -136,34 +138,65 @@ const LaboratoryDetail = ({ route, navigation }) => {
       </Modal>
       <View style={styles.title}>
         <Text style={styles.titleText}>{item.name}</Text>
-        <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'OCUPADO'}</Text>
+        <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
       </View>
 
       <View style={styles.title}>
         <Text>{item.location}</Text>
       </View>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>Software</Text>
-      </View>
-      <View style={styles.softwareContainer}>
-        {load && <ActivityIndicator />}
-        <FlatList
-          data={softwareList}
-          numColumns={2}
-          renderItem={
-            ({ item }) =>
-              <Item
-                item={item}
-                longPress={() => handlerLongPress(item.software_id)}
-                navigation={() => navigation.navigate('LaboratoryForm', { laboratory, item })}
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', width: '100%', paddingHorizontal: 10 }}>
+        <Pressable
+          style={{ flex: 1, width: '50%', justifyContent: 'center', alignItems: 'center', backgroundColor: isSoftware ? 'blue' : 'whitesmoke', height: 30 }}
+          onPress={() => { setIsSoftware(true) }}
+        >
+          <Text style={{ color: isSoftware ? 'white' : 'rgba(0,0,0,0.4)', fontWeight: '600' }}>Software</Text>
+        </Pressable>
 
-              />
-          }
-          keyExtractor={item => item.software_id}
-        />
+        <Pressable
+          style={{ flex: 1, width: '50%', justifyContent: 'center', alignItems: 'center', backgroundColor: !isSoftware ? 'blue' : 'whitesmoke', height: 30, color: 'white' }}
+          onPress={() => { setIsSoftware(false) }}
+        >
+          <Text style={{ color: !isSoftware ? 'white' : 'rgba(0,0,0,0.4)', fontWeight: '600' }}>Inventario</Text>
+        </Pressable>
       </View>
+      {isSoftware &&
+        <View style={styles.softwareContainer}>
+          {load && <ActivityIndicator />}
+          <FlatList
+            data={softwareList}
+            numColumns={2}
+            renderItem={
+              ({ item }) =>
+                <Item
+                  item={item}
+                  longPress={() => handlerLongPress(item.software_id)}
+                  navigation={() => navigation.navigate('LaboratoryForm', { laboratory, item })}
+
+                />
+            }
+            keyExtractor={item => item.software_id}
+          />
+        </View>}
+      {!isSoftware &&
+        <View style={styles.softwareContainer}>
+          {load && <ActivityIndicator />}
+          <FlatList
+            data={inventoryList}
+            numColumns={1}
+            renderItem={
+              ({ item }) =>
+                <ItemComponent
+                  item={item}
+                  longPress={() => handlerLongPress(item.component_id)}
+                  navigation={() => navigation.navigate('InventoryForm', { laboratory, item })}
+
+                />
+            }
+            keyExtractor={item => item.component_id}
+          />
+        </View>}
       <View style={styles.addButton}>
-        <Pressable style={styles.floatingButton} onPress={() => { navigation.navigate('LaboratoryForm', { laboratory }) }}>
+        <Pressable style={styles.floatingButton} onPress={handlerAdd}>
           <MaterialIcons name='add' size={30} color='white' />
         </Pressable>
       </View>
@@ -209,7 +242,7 @@ const styles = StyleSheet.create({
   row: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 10,
     alignContent: 'space-around',
     backgroundColor: 'white',
     marginHorizontal: 15,

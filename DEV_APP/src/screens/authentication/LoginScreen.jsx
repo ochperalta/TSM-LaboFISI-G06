@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getById, login } from '../../services/login'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ASYNC_STORAGE_USER } from '../../shared/constants'
@@ -12,6 +12,23 @@ const LoginScreen = ({ navigation }) => {
   const [viewPassword, setViewPassword] = useState(false)
   const [viewMessage, setViewMessage] = useState(false)
   const [messageLogin, setMessageLogin] = useState('')
+
+  useEffect(() => {
+    getAsyncStorage()
+  }, [])
+
+  const getAsyncStorage = async () => {
+    try {
+      const userExist = await AsyncStorage.getItem(ASYNC_STORAGE_USER.email) ?? null
+      console.log(userExist)
+      if (userExist) {
+        console.log('hacia layout')
+        navigation.navigate('Layout')
+      }
+    } catch (error) {
+      console.error('Error al recuperar el dato: ', error)
+    }
+  }
 
   const loginUser = async () => {
     setViewMessage(false)

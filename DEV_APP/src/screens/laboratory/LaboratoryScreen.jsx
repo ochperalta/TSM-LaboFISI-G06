@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Pressable, BackHandler } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getAll } from '../../services/laboratory'
 
 const Item = ({ navigation, laboratory }) => (
   <Pressable onPress={navigation} style={styles.row}>
     <Text style={styles.titleText}>{laboratory.name}</Text>
-    <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'OCUPADO'}</Text>
+    <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
   </Pressable>
 )
 
@@ -24,7 +24,20 @@ const LaboratoryScreen = ({ navigation }) => {
 
   useEffect(() => {
     getAllLaboratories()
-  }, [])
+    const handleBackPress = () => {
+      const currentScreen = navigation.isFocused()
+      console.log(currentScreen)
+      if (currentScreen) {
+        return true
+      }
+
+      return false
+    }
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+
+    return () => backHandler.remove()
+  }, [navigation])
 
   return (
     <View>

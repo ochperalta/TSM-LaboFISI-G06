@@ -1,29 +1,22 @@
-import { StyleSheet, Text, View, Image, TextInput, Pressable, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ActivityIndicator, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons'
-import { create, update } from '../../services/software'
+import { create, update } from '../../services/inventory'
 
-const LaboratoryForm = ({ route, navigation }) => {
+const InventoryForm = ({ route, navigation }) => {
   const { laboratory, item } = route?.params
-  const defaultIcon = 'https://cdn-icons-png.flaticon.com/512/8759/8759045.png'
   const [name, setName] = useState(item?.name ?? '')
-  const [icon, setIcon] = useState(item?.icon ?? '')
+  const [code, setCode] = useState(item?.code ?? '')
+  const [description, setDescription] = useState(item?.description ?? '')
   const [load, setload] = useState(false)
-
   async function handleSave () {
     setload(true)
+    console.log(laboratory)
     try {
-      let formData
-      if (!icon) {
-        setIcon(defaultIcon)
-        formData = { name, icon: defaultIcon, laboratory_id: laboratory.laboratory_id }
-      } else {
-        formData = { name, icon, laboratory_id: laboratory.laboratory_id }
-      }
+      const formData = { name, code, description, laboratory_id: laboratory.laboratory_id }
       let response
-      // Llama a la función saveFormData para guardar los datos
       if (item) {
-        response = await update(item.software_id, formData)
+        response = await update(item.component_id, formData)
         console.log('Formulario guardado')
       } else {
         response = await create(formData)
@@ -39,39 +32,33 @@ const LaboratoryForm = ({ route, navigation }) => {
       setload(true)
     }
   }
-
   return (
     <>
       <View style={styles.title}>
-        <Text style={styles.softwareTitle}>{name || 'Nuevo Software'}</Text>
-        <Image
-          style={styles.softwareIcon}
-          source={{
-            uri: icon || defaultIcon
-          }}
-        />
+        <Text style={styles.softwareTitle}>Inventario {laboratory.name}</Text>
       </View>
       <View style={styles.softwareDetail}>
         <Text style={styles.softwareNameLabel}>Nombre</Text>
         <TextInput style={styles.softwareName} onChangeText={(value) => setName(value)} value={name} />
-        <Text style={styles.softwareNameLabel}>Ruta de ícono</Text>
-        <TextInput style={styles.softwareName} onChangeText={(value) => setIcon(value)} value={icon === defaultIcon ? '' : icon} />
+        <Text style={styles.softwareNameLabel}>Código</Text>
+        <TextInput style={styles.softwareName} onChangeText={(value) => setCode(value)} value={code} />
+        <Text style={styles.softwareNameLabel}>Descripción</Text>
+        <TextInput style={styles.softwareName} onChangeText={(value) => setDescription(value)} value={description} />
       </View>
       {load && <ActivityIndicator />}
       {
-        name &&
+        name && code && description &&
           <View style={styles.addButton}>
             <Pressable style={styles.floatingButton} onPress={handleSave}>
               <MaterialIcons name='save' size={30} color='white' />
             </Pressable>
           </View>
       }
-
     </>
   )
 }
 
-export default LaboratoryForm
+export default InventoryForm
 
 const styles = StyleSheet.create({
   title: {
@@ -82,12 +69,18 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginHorizontal: 10,
     paddingVertical: 10,
-    height: 120
+    height: 60
   },
   softwareTitle: {
     textAlign: 'center',
     fontWeight: '500',
     marginBottom: 5
+  },
+  softwareDetail: {
+    backgroundColor: 'white',
+    marginTop: 15,
+    paddingVertical: 10,
+    marginHorizontal: 10
   },
   softwareNameLabel: {
     textAlign: 'left',
@@ -103,16 +96,6 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: 'rgba(0,0,0,0.04)'
   },
-  softwareIcon: {
-    height: 50,
-    width: 50
-  },
-  softwareDetail: {
-    backgroundColor: 'white',
-    marginTop: 15,
-    paddingVertical: 10,
-    marginHorizontal: 10
-  },
   addButton: {
     position: 'absolute',
     bottom: 20,
@@ -126,10 +109,6 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Hace que el botón sea circular
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  buttonText: {
-    fontSize: 24,
-    color: 'white', // Color del texto del botón
-    fontWeight: '500'
   }
+
 })

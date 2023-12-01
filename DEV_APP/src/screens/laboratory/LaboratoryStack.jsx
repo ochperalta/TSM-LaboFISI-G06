@@ -4,6 +4,7 @@ import LaboratoryScreen from './LaboratoryScreen'
 import LaboratoryDetail from './LaboratoryDetail'
 import LaboratoryForm from './LaboratoryForm'
 import Header from '../../components/Header'
+import InventoryForm from '../inventory/InventoryForm'
 
 const LabStack = createNativeStackNavigator()
 const LaboratoryStack = () => {
@@ -22,6 +23,11 @@ const LaboratoryStack = () => {
       <LabStack.Screen
         name='LaboratoryForm'
         component={LaboratoryForm}
+        options={Header.optionHeader}
+      />
+      <LabStack.Screen
+        name='InventoryForm'
+        component={InventoryForm}
         options={Header.optionHeader}
       />
     </LabStack.Navigator>

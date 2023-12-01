@@ -1,4 +1,5 @@
 export const USER_OPTIONS = {
+  rating: 'Añadir comentarios sobre la app',
   logout: 'Cerrar Sesión'
 }
 

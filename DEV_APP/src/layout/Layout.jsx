@@ -1,9 +1,9 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-// import ScheduleScreen from '../screens/schedule/ScheduleScreen'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import LaboratoryStack from '../screens/laboratory/LaboratoryStack'
 import UserStack from '../screens/user/UserStack'
+import ScheduleStack from '../screens/schedule/ScheduleStack'
 
 const optionTab = (route) => {
   return {
@@ -29,24 +29,6 @@ const optionTab = (route) => {
   }
 }
 
-// const ScheduleStack = createNativeStackNavigator()
-// const ScheduleStackScreen = () => {
-//   return (
-//     <ScheduleStack.Navigator>
-//       <ScheduleStack.Screen
-//         name='Schedule'
-//         component={ScheduleScreen}
-//         options={optionHeader}
-//       />
-//       <ScheduleStack.Screen
-//         name='Details'
-//         component={DetailsScreen}
-//         options={optionHeader}
-//       />
-//     </ScheduleStack.Navigator>
-//   )
-// }
-
 const Tab = createBottomTabNavigator()
 const Layout = () => {
   return (
@@ -54,11 +36,11 @@ const Layout = () => {
       initialRouteName='LaboratoryStack'
       screenOptions={({ route }) => (optionTab(route))}
     >
-      {/* <Tab.Screen
-          name='ScheduleStack'
-          component={ScheduleStackScreen}
-          options={{ title: 'Horario' }}
-        /> */}
+      <Tab.Screen
+        name='ScheduleStack'
+        component={ScheduleStack}
+        options={{ title: 'Horario' }}
+      />
       <Tab.Screen
         name='LaboratoryStack'
         component={LaboratoryStack}
