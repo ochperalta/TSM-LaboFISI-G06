@@ -25,3 +25,31 @@ GET http://localhost:1234/software/6b91ef96-46e4-4477-97fe-29485be63aa9
 
 ### Eliminar software a un laboratorio
 DELETE http://localhost:1234/software/ae1fc7d3-081f-46e9-a3c7-4a9213eaf89f
+
+
+### Agregar componente a un laboratorio
+POST http://localhost:1234/inventory
+Content-Type: application/json
+
+{
+  "name": "Impresora",
+  "code": "IMPRASD546163",
+  "laboratory_id": "6b91ef96-46e4-4477-97fe-29485be63aa9",
+  "description": "Impresora negra"
+}
+
+### Recuperar una components por id
+GET http://localhost:1234/inventory/6b91ef96-46e4-4477-97fe-29485be63aa9
+
+### Eliminar componente a un laboratorio
+DELETE http://localhost:1234/inventory/b6474d18-5a52-45c0-b21a-4cc50af09082
+
+### Actualizar componente a un laboratorio
+PATCH http://localhost:1234/inventory/08e6643e-4b1d-45fe-9ff9-cf8273dbf3d6
+Content-Type: application/json
+
+{
+  "name": "Impresora",
+  "code": "IMPRASD546163",
+  "description": "Impresora ahora blanca"
+}
