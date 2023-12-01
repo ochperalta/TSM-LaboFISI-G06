@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Pressable, TextInput, Alert, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getById, login } from '../../services/login'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -12,6 +12,7 @@ const LoginScreen = ({ navigation }) => {
   const [viewPassword, setViewPassword] = useState(false)
   const [viewMessage, setViewMessage] = useState(false)
   const [messageLogin, setMessageLogin] = useState('')
+  const [load, setLoad] = useState(false)
 
   useEffect(() => {
     getAsyncStorage()
@@ -32,6 +33,7 @@ const LoginScreen = ({ navigation }) => {
 
   const loginUser = async () => {
     setViewMessage(false)
+    setLoad(true)
     const pass = password
     let saltCode = ''
     await getById(email)
@@ -55,17 +57,22 @@ const LoginScreen = ({ navigation }) => {
                 console.log(responseLogin[0])
                 saveAsyncStorage(responseLogin[0])
                 navigation.navigate('Layout')// Actualiza el estado con los datos obtenidos
+                setLoad(false)
               })
               .catch(error => {
                 setViewMessage(true)
                 console.log(error.message)
                 setMessageLogin(error.message)
+                Alert.alert('Oh no', 'no fue posible iniciar sesión')
+                setLoad(false)
               })
           }
         })
       })
       .catch(error => {
         console.log(error)
+        Alert.alert('¡Oh no!', 'No fue posible iniciar sesión')
+        setLoad(false)
       })
   }
 
@@ -73,6 +80,8 @@ const LoginScreen = ({ navigation }) => {
     try {
       await AsyncStorage.setItem(ASYNC_STORAGE_USER.username, data.username)
       await AsyncStorage.setItem(ASYNC_STORAGE_USER.email, data.email)
+      await AsyncStorage.setItem(ASYNC_STORAGE_USER.role, data.role_name)
+      await AsyncStorage.setItem(ASYNC_STORAGE_USER.userId, data.user_id)
       console.log('Dato guardado exitosamente')
     } catch (error) {
       console.error('Error al guardar el dato: ', error)
@@ -114,8 +123,12 @@ const LoginScreen = ({ navigation }) => {
         style={!password || !email ? styles.btnLoginDisabled : styles.btnLogin}
         onPress={loginUser}
         disabled={!password || !email}
-      >
-        <Text style={styles.loginText}>Ingresar</Text>
+      >{
+        load
+          ? <ActivityIndicator />
+          : <Text style={styles.loginText}>Ingresar</Text>
+
+      }
       </Pressable>
 
       <Text style={styles.questionLogin}>¿Aún no se ha registro?, Regístrese</Text>

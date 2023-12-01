@@ -5,7 +5,7 @@ import { getAll } from '../../services/laboratory'
 const Item = ({ navigation, laboratory }) => (
   <Pressable onPress={navigation} style={styles.row}>
     <Text style={styles.titleText}>{laboratory.name}</Text>
-    <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
+    <Text style={laboratory.state === 'A' ? styles.available : styles.occupied}>{laboratory.state === 'A' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
   </Pressable>
 )
 

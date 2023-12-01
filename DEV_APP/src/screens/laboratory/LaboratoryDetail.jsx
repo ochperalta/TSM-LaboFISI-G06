@@ -4,6 +4,8 @@ import { useIsFocused } from '@react-navigation/native'
 import { deleteSoftware, getById } from '../../services/software'
 import { deleteInventory, getByIdInventory } from '../../services/inventory'
 import { MaterialIcons } from '@expo/vector-icons'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ASYNC_STORAGE_USER } from '../../shared/constants'
 
 const Item = ({ navigation, item, longPress }) => (
   <Pressable
@@ -45,6 +47,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [idDelete, setIdDelete] = useState(null)
   const [isSoftware, setIsSoftware] = useState(true)
+  const [role, setRole] = useState('user')
 
   function getSoftwareList () {
     getById(item.laboratory_id)
@@ -68,9 +71,29 @@ const LaboratoryDetail = ({ route, navigation }) => {
       .finally(setload(false))
   }
 
+  const getAsyncStorage = async () => {
+    try {
+      setRole(await AsyncStorage.getItem(ASYNC_STORAGE_USER.role))
+    } catch (error) {
+      console.error('Error al recuperar el dato: ', error)
+    }
+  }
+
   const handlerLongPress = (id) => {
-    setIdDelete(id)
-    setModalVisible(true)
+    if (role === 'support') {
+      setIdDelete(id)
+      setModalVisible(true)
+    }
+  }
+
+  const handlerNavigateForm = () => {
+    if (role === 'support') {
+      if (isSoftware) {
+        navigation.navigate('LaboratoryForm', { laboratory, item })
+      } else {
+        navigation.navigate('InventoryForm', { laboratory, item })
+      }
+    }
   }
 
   const handlerDelete = async () => {
@@ -98,6 +121,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
     if (isFocused) {
       getSoftwareList()
       getInventoryList()
+      getAsyncStorage()
     }
   }, [isFocused])
 
@@ -138,7 +162,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
       </Modal>
       <View style={styles.title}>
         <Text style={styles.titleText}>{item.name}</Text>
-        <Text style={laboratory.state === 'D' ? styles.available : styles.occupied}>{laboratory.state === 'D' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
+        <Text style={laboratory.state === 'A' ? styles.available : styles.occupied}>{laboratory.state === 'A' ? 'DISPONIBLE' : 'NO DISPONIBLE'}</Text>
       </View>
 
       <View style={styles.title}>
@@ -170,7 +194,7 @@ const LaboratoryDetail = ({ route, navigation }) => {
                 <Item
                   item={item}
                   longPress={() => handlerLongPress(item.software_id)}
-                  navigation={() => navigation.navigate('LaboratoryForm', { laboratory, item })}
+                  navigation={handlerNavigateForm}
 
                 />
             }
@@ -188,18 +212,19 @@ const LaboratoryDetail = ({ route, navigation }) => {
                 <ItemComponent
                   item={item}
                   longPress={() => handlerLongPress(item.component_id)}
-                  navigation={() => navigation.navigate('InventoryForm', { laboratory, item })}
+                  navigation={handlerNavigateForm}
 
                 />
             }
             keyExtractor={item => item.component_id}
           />
         </View>}
-      <View style={styles.addButton}>
-        <Pressable style={styles.floatingButton} onPress={handlerAdd}>
-          <MaterialIcons name='add' size={30} color='white' />
-        </Pressable>
-      </View>
+      {role === 'support' &&
+        <View style={styles.addButton}>
+          <Pressable style={styles.floatingButton} onPress={handlerAdd}>
+            <MaterialIcons name='add' size={30} color='white' />
+          </Pressable>
+        </View>}
     </>
   )
 }

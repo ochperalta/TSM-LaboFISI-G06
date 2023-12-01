@@ -9,5 +9,7 @@ export const CONFIGURATION = {
 
 export const ASYNC_STORAGE_USER = {
   username: 'username',
-  email: 'email'
+  email: 'email',
+  role: 'role',
+  userId: 'userId'
 }

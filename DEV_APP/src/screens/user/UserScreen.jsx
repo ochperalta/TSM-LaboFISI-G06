@@ -8,6 +8,7 @@ const UserScreen = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const navigation = useNavigation()
+  const [role, setRole] = useState('user')
 
   useEffect(() => {
     getAsyncStorage()
@@ -30,6 +31,7 @@ const UserScreen = () => {
     try {
       setUsername(await AsyncStorage.getItem(ASYNC_STORAGE_USER.username) ?? '')
       setEmail(await AsyncStorage.getItem(ASYNC_STORAGE_USER.email) ?? '')
+      setRole(await AsyncStorage.getItem(ASYNC_STORAGE_USER.role) ?? '')
     } catch (error) {
       console.error('Error al recuperar el dato: ', error)
     }
@@ -49,12 +51,13 @@ const UserScreen = () => {
       <View style={styles.containerUser}>
         <Text style={styles.label}>Usuario: {username}</Text>
         <Text style={styles.label}>Email: {email}</Text>
-        <Pressable
-          onPress={() => { navigation.navigate('Rating') }}
-          style={{ width: '100%' }}
-        >
-          <Text style={[styles.label, styles.logout]}>{USER_OPTIONS.rating}</Text>
-        </Pressable>
+        {role === 'user' &&
+          <Pressable
+            onPress={() => { navigation.navigate('Rating') }}
+            style={{ width: '100%' }}
+          >
+            <Text style={[styles.label, styles.logout]}>{USER_OPTIONS.rating}</Text>
+          </Pressable>}
         <Pressable
           onPress={handlerNavigateLogin}
           style={{ width: '100%' }}

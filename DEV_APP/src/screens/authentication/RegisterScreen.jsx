@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Alert, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import ViewPassword from './ViewPassword'
-import bcrypt from 'bcryptjs'
-import { v4 as uuidv4 } from 'uuid'
+import * as bcrypt from 'react-native-bcrypt'
 import { register } from '../../services/register'
+import { ASYNC_STORAGE_USER } from '../../shared/constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('')
@@ -15,11 +16,12 @@ const RegisterScreen = ({ navigation }) => {
   const [viewMessage, setViewMessage] = useState(false)
   const [messageLogin, setMessageLogin] = useState('')
   const [isUser, setIsUser] = useState(true)
+  const [load, setLoad] = useState(false)
 
   const registerUser = () => {
     setViewMessage(false)
-
-    const uuid = uuidv4()
+    setLoad(true)
+    const uuid = new Date().toString()
     const pass = password
 
     if (password !== repeatPassword) {
@@ -28,10 +30,13 @@ const RegisterScreen = ({ navigation }) => {
       return
     }
 
-    bcrypt.genSalt(10, (_err, salt) => {
+    bcrypt.default.genSalt(10, (_err, salt) => {
+      console.log(salt)
       bcrypt.hash(pass, salt, (err, hash) => {
         if (err) {
           console.error('Error al generar el hash de la contraseña:', err)
+          Alert.alert('¡Oh no!', 'No fue posible iniciar sesión')
+          setLoad(false)
         } else {
           // El valor de 'hash' es el hash seguro de la contraseña
           console.log('Contraseña hasheada:', hash)
@@ -47,12 +52,15 @@ const RegisterScreen = ({ navigation }) => {
           register(requestRegister)
             .then(() => {
               resetPassword()
-              navigation.navigate('LoginScreen')// Actualiza el estado con los datos obtenidos
+              navigation.navigate('LoginScreen')
+              setLoad(false)
             })
             .catch(error => {
               setViewMessage(true)
               console.log(error.message)
               setMessageLogin(error.message)
+              Alert.alert('¡Oh no!', 'No fue posible iniciar sesión')
+              setLoad(false)
             })
         }
       })
@@ -62,7 +70,8 @@ const RegisterScreen = ({ navigation }) => {
   const handleTextChange = (text) => {
     setPassword(text)
   }
-  const resetPassword = () => {
+  const resetPassword = async () => {
+    await AsyncStorage.setItem(ASYNC_STORAGE_USER.email, email)
     setPassword('')
   }
 
@@ -121,8 +130,12 @@ const RegisterScreen = ({ navigation }) => {
         style={!password || !email || !repeatPassword || !username ? styles.btnLoginDisabled : styles.btnLogin}
         onPress={registerUser}
         disabled={!password || !email || !repeatPassword || !username}
-      >
-        <Text style={styles.loginText}>Registrarse</Text>
+      >{
+          load
+            ? <ActivityIndicator />
+            : <Text style={styles.loginText}>Registrarse</Text>
+        }
+
       </Pressable>
 
       <Text style={styles.questionLogin}>¿Ya tiene una cuenta?, Ingrese</Text>

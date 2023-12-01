@@ -1,11 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, BackHandler } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, BackHandler, ActivityIndicator } from 'react-native'
+import { getAll } from '../../services/schedule'
 
 const ScheduleScreen = ({ navigation }) => {
   const [selectedDay, setSelectedDay] = useState(null)
+  const [scheduleList, setScheduleList] = useState([])
+  const [load, setload] = useState(true)
+  function getScheduleList () {
+    getAll()
+      .then(data => {
+        setScheduleList(data) // Actualiza el estado con los datos obtenidos
+      })
+      .catch(error => {
+        console.error('Error al obtener datos de la API:', error)
+      })
+      .finally(setload(false))
+  }
 
   useEffect(() => {
     // Obtener el día actual al montar el componente
+    getScheduleList()
     const today = new Date().toLocaleDateString('es-ES', { weekday: 'long' })
     console.log(today)
     setSelectedDay(today)
@@ -25,75 +39,6 @@ const ScheduleScreen = ({ navigation }) => {
     return () => backHandler.remove()
   }, [navigation])
 
-  const weeklyScheduleData = [
-    {
-      day: 'Lunes',
-      labs: [
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab C', schedule: '14:00 - 16:00', course: 'Curso 3' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' },
-        { name: 'Lab A', schedule: '8:00 - 10:00', course: 'Curso 1' },
-        { name: 'Lab B', schedule: '10:00 - 12:00', course: 'Curso 2' }
-      ]
-    },
-    {
-      day: 'Martes',
-      labs: [
-        { name: 'Lab D', schedule: '9:00 - 11:00', course: 'Curso 4' },
-        { name: 'Lab E', schedule: '11:00 - 13:00', course: 'Curso 5' },
-        { name: 'Lab F', schedule: '14:30 - 16:30', course: 'Curso 6' }
-      ]
-    },
-    {
-      day: 'Miércoles',
-      labs: [
-        { name: 'Lab G', schedule: '8:30 - 10:30', course: 'Curso 7' },
-        { name: 'Lab H', schedule: '10:30 - 12:30', course: 'Curso 8' },
-        { name: 'Lab I', schedule: '14:00 - 16:00', course: 'Curso 9' }
-      ]
-    },
-    {
-      day: 'Jueves',
-      labs: [
-        { name: 'Lab J', schedule: '9:30 - 11:30', course: 'Curso 10' },
-        { name: 'Lab K', schedule: '11:30 - 13:30', course: 'Curso 11' },
-        { name: 'Lab L', schedule: '15:00 - 17:00', course: 'Curso 12' }
-      ]
-    },
-    {
-      day: 'Viernes',
-      labs: [
-        { name: 'Lab M', schedule: '8:00 - 10:00', course: 'Curso 13' },
-        { name: 'Lab N', schedule: '10:00 - 12:00', course: 'Curso 14' },
-        { name: 'Lab O', schedule: '13:30 - 15:30', course: 'Curso 15' }
-      ]
-    },
-    {
-      day: 'Sábado',
-      labs: [
-        { name: 'Lab P', schedule: '9:00 - 11:00', course: 'Curso 16' },
-        { name: 'Lab Q', schedule: '11:00 - 13:00', course: 'Curso 17' },
-        { name: 'Lab R', schedule: '14:30 - 16:30', course: 'Curso 18' }
-      ]
-    }
-  ]
-
   const renderDayItem = ({ item }) => (
     <View style={styles.dayContainer}>
       <TouchableOpacity onPress={() => setSelectedDay(item.day.toString().toLowerCase())}>
@@ -108,12 +53,12 @@ const ScheduleScreen = ({ navigation }) => {
           data={item.labs}
           renderItem={({ item }) => (
             <View style={styles.labContainer}>
-              <Text style={styles.labName}>{item.name}</Text>
-              <Text style={styles.labSchedule}>{item.schedule}</Text>
+              <Text style={styles.labName}>{item.laboratory}</Text>
+              <Text style={styles.labSchedule}>{item.init + ' - ' + item.end}</Text>
               <Text style={styles.labCourse}>{item.course}</Text>
             </View>
           )}
-          keyExtractor={(lab) => lab.name}
+          keyExtractor={(lab) => lab.schedule_id}
         />
       )}
     </View>
@@ -126,8 +71,9 @@ const ScheduleScreen = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.container}>
+        {load && <ActivityIndicator />}
         <FlatList
-          data={weeklyScheduleData}
+          data={scheduleList}
           renderItem={renderDayItem}
           keyExtractor={(day) => day.day}
           horizontal
@@ -156,6 +102,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    alignItems: 'center',
     backgroundColor: 'white',
     marginTop: 15,
     paddingVertical: 10,
