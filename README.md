@@ -1,2 +1,2 @@
-# TSM-LaboFISI-G14
+# TSM-LaboFISI-G6
 Taller de construcción de software móvil
